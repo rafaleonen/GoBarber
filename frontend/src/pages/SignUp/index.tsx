@@ -1,69 +1,77 @@
-import React, { useCallback, useRef } from 'react'
-import { FiArrowLeft, FiMail, FiUser, FiLock } from 'react-icons/fi'
+import React, { useCallback, useRef } from 'react';
+import { FiArrowLeft, FiMail, FiUser, FiLock } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
-import { Form } from '@unform/web'
-import * as Yup from 'yup'
-import { Link, useHistory } from 'react-router-dom'
-import api from '../../services/api'
+import { Form } from '@unform/web';
+import * as Yup from 'yup';
+import { Link, useHistory } from 'react-router-dom';
+import api from '../../services/api';
 
-import { useToast } from '../../hooks/toast'
+import { useToast } from '../../hooks/toast';
 
-import getValidationErrors from '../../utils/getValidationErrors'
-import { Container, Content, AnimationContainer, Background } from './styles'
-import logoImg from '../../assets/logo.svg'
+import getValidationErrors from '../../utils/getValidationErrors';
+import { Container, Content, AnimationContainer, Background } from './styles';
+import logoImg from '../../assets/logo.svg';
 
-import Input from '../../components/Input'
-import Button from '../../components/Button'
+import Input from '../../components/Input';
+import Button from '../../components/Button';
 
 interface SingUpFormData {
-  name: string
-  email: string
-  password: string
+  name: string;
+  email: string;
+  password: string;
 }
 
 const SignUp: React.FC = () => {
-  const formRef = useRef<FormHandles>(null)
-  const { addToast } = useToast()
-  const history = useHistory()
+  const formRef = useRef<FormHandles>(null);
+  const { addToast } = useToast();
+  const history = useHistory();
 
-  const handleSubmit = useCallback(async (data: SingUpFormData) => {
-    try {
-      formRef.current?.setErrors({})
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Nome obrigatório'),
-        email: Yup.string().required('E-mail obrigatório').email('Digite um e-mail válido'),
-        password: Yup.string().min(6, 'Senha deve conter no mínimo 6 digitos'),
-      })
+  const handleSubmit = useCallback(
+    async (data: SingUpFormData) => {
+      try {
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome obrigatório'),
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
+          password: Yup.string().min(
+            6,
+            'Senha deve conter no mínimo 6 digitos',
+          ),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false
-      })
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      await api.post('/users', data)
+        await api.post('/users', data);
 
-      history.push('/')
+        history.push('/');
 
-      addToast({
-        type: 'sucess',
-        title: 'Cadastro realizado!',
-        description: 'Você ja pode fazer seu logon no GoBarber!'
-      })
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err)
+        addToast({
+          type: 'sucess',
+          title: 'Cadastro realizado!',
+          description: 'Você ja pode fazer seu logon no GoBarber!',
+        });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
 
-        formRef.current?.setErrors(errors)
+          formRef.current?.setErrors(errors);
 
-        return
+          return;
+        }
+
+        addToast({
+          type: 'error',
+          title: 'Error no cadastro',
+          description: 'Ocorreu um erro ao fazer cadastro, tente novamente.',
+        });
       }
-
-      addToast({
-        type: 'error',
-        title: 'Error no cadastro',
-        description: 'Ocorreu um erro ao fazer cadastro, tente novamente.'
-      })
-    }
-  }, [addToast, history])
+    },
+    [addToast, history],
+  );
 
   return (
     <Container>
@@ -76,10 +84,14 @@ const SignUp: React.FC = () => {
             <h1>Faça seu cadastro</h1>
             <Input name="name" placeholder="Nome" icon={FiUser} />
             <Input name="email" placeholder="E-mail" icon={FiMail} />
-            <Input name="password" type="password" placeholder="Senha" icon={FiLock} />
+            <Input
+              name="password"
+              type="password"
+              placeholder="Senha"
+              icon={FiLock}
+            />
 
             <Button type="submit">Cadastrar</Button>
-
           </Form>
 
           <Link to="/">
@@ -89,7 +101,7 @@ const SignUp: React.FC = () => {
         </AnimationContainer>
       </Content>
     </Container>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;
