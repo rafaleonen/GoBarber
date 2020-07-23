@@ -30,12 +30,14 @@
                 "ts": "never"
             }
         ],
+        "@typescript-eslint/interface-name-prefix": ["errors", { "prefixWithI": "always"}],
         "prettier/prettier": "error",
+        "non-useless-constructor": "off",
         "class-methods-use-this": "off",
         "@typescript-eslint/camelcase": "off",
         "@typescript-eslint/no-unused-vars": ["error", {
           "argsIgnorePattern": "_"
-        }],
+        }]
     },
     "settings": {
         "import/resolver": {
