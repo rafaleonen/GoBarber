@@ -46,7 +46,7 @@ describe('SendForgotPasswordEmail', () => {
     })
 
     it('should not be able to reset password with a non-existing token', async() => {
-        expect(resetPassword.execute({
+        await expect(resetPassword.execute({
             token: 'non-existing token',
             password: '123456'
         })).rejects.toBeInstanceOf(AppError)
