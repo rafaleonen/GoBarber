@@ -1,9 +1,8 @@
 import "reflect-metadata"
 import { injectable, inject } from 'tsyringe'
+import { getDaysInMonth, getDate } from 'date-fns'
 
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository'
-// import User from '@modules/users/infra/typeorm/entities/User';
-// import AppError from "@shared/errors/AppError"
 
 interface Request {
     provider_id: string;
@@ -11,7 +10,7 @@ interface Request {
     year: number;
 }
 
-type Response  = Array <{
+type Response = Array<{
     day: number;
     available: boolean;
 }>
@@ -21,7 +20,7 @@ class ListProviderMonthAvailabilityService {
     constructor(
         @inject('AppointmentsRepository')
         private appointmentsRepository: IAppointmentsRepository
-        ) {}
+    ) { }
 
     public async execute({ provider_id, month, year }: Request): Promise<Response> {
         const appointments = await this.appointmentsRepository.findAllInMonthFromProvider({
@@ -30,9 +29,21 @@ class ListProviderMonthAvailabilityService {
             year
         })
 
-        console.log(appointments)
 
-        return [{ day: 1, available: false}]
+        const numberOfDaysInMonth = getDaysInMonth(new Date(year, month - 1))
+
+        const eachDayArray = Array.from(
+            { length: numberOfDaysInMonth },
+            (_, index) => index + 1,
+        )
+
+        const availability = eachDayArray.map(day => {
+            const appointmentsInDay = appointments.filter(appointment => getDate(appointment.date) === day)
+
+            return { day, available: appointmentsInDay.length < 10 }
+        })
+
+        return availability
     }
 }
 
