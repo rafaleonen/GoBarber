@@ -17,3 +17,8 @@ import IUserTokensRepository from '@modules/users/repositories/IUserTokensReposi
 import UserTokensRepository from '@modules/users/infra/typeorm/repositories/UserTokensRepository'
 
 container.registerSingleton<IUserTokensRepository>('UserTokensRepository', UserTokensRepository)
+
+import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository'
+import NotificationsRepository from '@modules/notifications/infra/typeorm/repositories/NotificationsRepository'
+
+container.registerSingleton<INotificationsRepository>('NotificationsRepository', NotificationsRepository)
