@@ -3,6 +3,7 @@ import { injectable, inject } from 'tsyringe'
 
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository'
 import Appointment from '@modules/appointments/infra/typeorm/entities/Appointment';
+import ICacheProvider from "@shared/container/providers/CacheProvider/models/ICacheProvider";
 // import AppError from "@shared/errors/AppError"
 
 interface Request {
@@ -16,7 +17,10 @@ interface Request {
 class ListProviderAppointmentsService {
     constructor(
         @inject('AppointmentsRepository')
-        private appointmentsRepository: IAppointmentsRepository
+        private appointmentsRepository: IAppointmentsRepository,
+
+        @inject('CacheProvider')
+        private cacheProvider: ICacheProvider
     ) { }
 
     public async execute({ provider_id, day ,month, year }: Request): Promise<Array<Appointment>> {
