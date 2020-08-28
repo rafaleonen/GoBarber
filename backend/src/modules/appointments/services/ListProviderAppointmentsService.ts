@@ -4,6 +4,7 @@ import { injectable, inject } from 'tsyringe'
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository'
 import Appointment from '@modules/appointments/infra/typeorm/entities/Appointment';
 import ICacheProvider from "@shared/container/providers/CacheProvider/models/ICacheProvider";
+import { classToClass } from "class-transformer";
 // import AppError from "@shared/errors/AppError"
 
 interface Request {
@@ -36,7 +37,7 @@ class ListProviderAppointmentsService {
                 year
             })
 
-            await this.cacheProvider.save(cacheKey, appointments)
+            await this.cacheProvider.save(cacheKey, classToClass(appointments))
         }
 
 
