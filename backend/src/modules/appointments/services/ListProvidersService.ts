@@ -1,5 +1,6 @@
 import "reflect-metadata"
 import { injectable, inject } from 'tsyringe'
+import { classToClass } from 'class-transformer'
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository'
 import User from '@modules/users/infra/typeorm/entities/User';
@@ -26,10 +27,10 @@ class ListProvidersService {
             users = await this.usersRepository.findAllProviders({
                except_user_id: user_id
             })
-    
-            this.cacheProvider.save(`providers-list:${user_id}`, users)
+
+            this.cacheProvider.save(`providers-list:${user_id}`, classToClass(users))
         }
-        
+
         return users
     }
 }
