@@ -1,33 +1,32 @@
 import React, { useCallback, useRef } from 'react';
-import { FiArrowLeft, FiMail, FiUser, FiLock } from 'react-icons/fi';
+import { FiMail, FiUser, FiLock } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import api from '../../services/api';
 
 import { useToast } from '../../hooks/toast';
 
 import getValidationErrors from '../../utils/getValidationErrors';
-import { Container, Content, AnimationContainer, Background } from './styles';
-import logoImg from '../../assets/logo.svg';
+import { Container, Content } from './styles';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-interface SignUpFormData {
+interface ProfileFormData {
   name: string;
   email: string;
   password: string;
 }
 
-const SignUp: React.FC = () => {
+const Profile: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
   const history = useHistory();
 
   const handleSubmit = useCallback(
-    async (data: SignUpFormData) => {
+    async (data: ProfileFormData) => {
       try {
         formRef.current?.setErrors({});
         const schema = Yup.object().shape({
@@ -75,33 +74,35 @@ const SignUp: React.FC = () => {
 
   return (
     <Container>
-      <Background />
       <Content>
-        <AnimationContainer>
-          <img src={logoImg} alt="GoBarber" />
-
           <Form onSubmit={handleSubmit} ref={formRef}>
-            <h1>Faça seu cadastro</h1>
+            <h1>Meu Perfil</h1>
             <Input name="name" placeholder="Nome" icon={FiUser} />
             <Input name="email" placeholder="E-mail" icon={FiMail} />
             <Input
+              name="old_password"
+              type="password"
+              placeholder="Senha atual"
+              icon={FiLock}
+            />
+            <Input
               name="password"
               type="password"
-              placeholder="Senha"
+              placeholder="Nova senha"
+              icon={FiLock}
+            />
+            <Input
+              name="password_confirmation"
+              type="password"
+              placeholder="Confirmar senha"
               icon={FiLock}
             />
 
-            <Button type="submit">Cadastrar</Button>
+            <Button type="submit">Confirmar mudanças</Button>
           </Form>
-
-          <Link to="/">
-            <FiArrowLeft />
-            Voltar para Logon
-          </Link>
-        </AnimationContainer>
       </Content>
     </Container>
   );
 };
 
-export default SignUp;
+export default Profile;
