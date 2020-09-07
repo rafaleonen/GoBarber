@@ -29,7 +29,12 @@ class CreateAppointmentService {
         ) {}
 
     public async execute({ provider_id, user_id, date }: Request): Promise<Appointment> {
-        const appointmentDate = startOfHour(date);
+        const year = date.getFullYear()
+        const month = date.getMonth()
+        const day = date.getDate()
+        const hour = date.getHours() + 3
+
+        const appointmentDate = new Date(year, month, day, hour, 0, 0);
 
         if(isBefore(appointmentDate, Date.now())) {
             throw new AppError('You can not create an appointment on a past date')
